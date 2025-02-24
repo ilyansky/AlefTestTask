@@ -45,7 +45,7 @@ final class TextFieldView: UIView, UITextFieldDelegate {
 
 extension TextFieldView {
     private func setUI() {
-        self.translatesAutoresizingMaskIntoConstraints = false
+        translatesAutoresizingMaskIntoConstraints = false
 
         setView()
         setLabel()
@@ -53,9 +53,9 @@ extension TextFieldView {
     }
 
     private func setView() {
-        self.layer.borderWidth = 1
-        self.layer.borderColor = ColorPack.gray5
-        self.layer.cornerRadius = 5
+        layer.borderWidth = 1
+        layer.borderColor = ColorPack.gray5
+        layer.cornerRadius = 5
     }
 
     private func setLabel() {
@@ -63,12 +63,12 @@ extension TextFieldView {
         label.text = labelText
         label.textColor = ColorPack.gray
 
-        self.addSubview(label)
+        addSubview(label)
 
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: self.topAnchor,
+            label.topAnchor.constraint(equalTo: topAnchor,
                                        constant: TextFieldViewSize.verticalSpace),
-            label.leadingAnchor.constraint(equalTo: self.leadingAnchor,
+            label.leadingAnchor.constraint(equalTo: leadingAnchor,
                                            constant: TextFieldViewSize.horizontalSpace)
         ])
     }
@@ -80,14 +80,14 @@ extension TextFieldView {
             textField.keyboardType = .decimalPad
         }
 
-        self.addSubview(textField)
+        addSubview(textField)
 
         NSLayoutConstraint.activate([
-            textField.bottomAnchor.constraint(equalTo: self.bottomAnchor,
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor,
                                               constant: -TextFieldViewSize.verticalSpace),
-            textField.leadingAnchor.constraint(equalTo: self.leadingAnchor,
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor,
                                                constant: TextFieldViewSize.horizontalSpace),
-            textField.trailingAnchor.constraint(equalTo: self.trailingAnchor,
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor,
                                                 constant: -TextFieldViewSize.horizontalSpace)
         ])
     }

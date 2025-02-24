@@ -20,9 +20,9 @@ final class LabelView: UILabel {
 
 extension LabelView {
     private func setUI() {
-        self.text = labelText
-        self.font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
-        self.translatesAutoresizingMaskIntoConstraints = false
+        text = labelText
+        font = UIFont.systemFont(ofSize: fontSize, weight: .regular)
+        translatesAutoresizingMaskIntoConstraints = false
     }
 }
 
