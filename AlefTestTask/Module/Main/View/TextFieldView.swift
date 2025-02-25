@@ -30,16 +30,16 @@ final class TextFieldView: UIView, UITextFieldDelegate {
 extension TextFieldView {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
-        
+
         let newText = (currentText as NSString).replacingCharacters(in: range, with: string)
-        
+
         if keyboardType == .numbers && (newText.hasPrefix("0") || newText.contains(",")) {
             return false
         }
-        
+
         return true
     }
-    
+
     func clear() {
         textField.text = ""
     }

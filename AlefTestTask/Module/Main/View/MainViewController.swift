@@ -19,11 +19,38 @@ final class MainViewController: UIViewController {
     private let childrenTableView = UITableView()
     private let clearButton = UIButton(type: .system)
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(MainViewController.keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(MainViewController.keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+
         setup()
     }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        hideButton(clearButton)
+
+        if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
+            childrenTableView.setBottomInset(to: keyboardHeight)
+        }
+    }
+
+    @objc private func keyboardWillHide() {
+        showButton(clearButton)
+        childrenTableView.setBottomInset(to: 0.0)
+    }
+
 }
 
 // MARK: - Utility
@@ -55,20 +82,20 @@ extension MainViewController {
         ageTextField.clear()
     }
 
-    private func showAddChildButton() {
+    private func showButton(_ button: UIButton) {
         UIView.animate(withDuration: 0.3, animations: {
-            self.addChildButton.alpha = 1
+            button.alpha = 1
         })
     }
 
-    private func hideAddChildButton() {
+    private func hideButton(_ button: UIButton) {
         UIView.animate(withDuration: 0.3, animations: {
-            self.addChildButton.alpha = 0
+            button.alpha = 0
         })
     }
 }
 
-// MARK: - Delegates
+// MARK: - Delegate
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.getChildrenCount()
@@ -92,7 +119,7 @@ extension MainViewController: CellViewDelegate {
             let count = viewModel.getChildrenCount()
 
             if count == 5 {
-                showAddChildButton()
+                showButton(addChildButton)
             }
 
             viewModel.decrementChildrenCount()
@@ -104,13 +131,13 @@ extension MainViewController: CellViewDelegate {
     }
 }
 
-// MARK: - Actions
+// MARK: - Action
 extension MainViewController {
     @objc private func incrementChild() {
         let childrenCount = viewModel.getChildrenCount()
 
         if childrenCount == 4 {
-            hideAddChildButton()
+            hideButton(addChildButton)
         }
 
         let newIndexPath = IndexPath(row: childrenCount, section: 0)
@@ -128,7 +155,7 @@ extension MainViewController {
         let resetAction = UIAlertAction(title: "Сбросить данные", style: .default) { _ in
             self.clearTableView()
             self.clearPersonalData()
-            self.showAddChildButton()
+            self.showButton(self.addChildButton)
         }
 
         let cancelAction = UIAlertAction(title: "Отмена", style: .destructive)
@@ -240,10 +267,9 @@ extension MainViewController {
 
         view.addSubview(clearButton)
 
-
         NSLayoutConstraint.activate([
             clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            clearButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -15),
+            clearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             clearButton.heightAnchor.constraint(equalToConstant: 50),
             clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 180)
         ])
@@ -257,7 +283,7 @@ extension MainViewController {
             childrenTableView.topAnchor.constraint(equalTo: addChildButton.bottomAnchor, constant: 10),
             childrenTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             childrenTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            childrenTableView.bottomAnchor.constraint(equalTo: clearButton.topAnchor, constant: -20)
+            childrenTableView.bottomAnchor.constraint(equalTo: clearButton.topAnchor, constant: -15)
         ])
     }
 }

@@ -32,7 +32,7 @@ extension CellView {
     }
 }
 
-// MARK: - Actions
+// MARK: - Action
 extension CellView {
     @objc private func deleteButtonTapped() {
         clear()
