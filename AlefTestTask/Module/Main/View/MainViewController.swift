@@ -1,5 +1,9 @@
 import UIKit
 
+protocol CellViewDelegate: AnyObject {
+    func deleteButtonTapped(in cell: CellView)
+}
+
 final class MainViewController: UIViewController {
     private let viewModel = ViewModel()
 
@@ -39,6 +43,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = childrenTableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as! CellView
+        cell.delegate = self
 
         return cell
     }
@@ -48,19 +53,43 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+extension MainViewController: CellViewDelegate {
+    func deleteButtonTapped(in cell: CellView) {
+        if let indexPath = childrenTableView.indexPath(for: cell) {
+            viewModel.decrementChildrenCount()
+            childrenTableView.beginUpdates()
+            childrenTableView.deleteRows(at: [indexPath], with: .fade)
+            childrenTableView.endUpdates()
+
+            UIView.animate(withDuration: 0.3, animations: {
+                self.addChildButton.isHidden = false
+                self.addChildButton.alpha = 1
+            })
+        }
+
+    }
+}
+
 extension MainViewController {
     @objc private func incrementChild() {
         let childrenCount = viewModel.getChildrenCount()
-        guard childrenCount < 5 else { return }
 
         let newIndexPath = IndexPath(row: childrenCount, section: 0)
         viewModel.incrementChildrenCount()
 
         childrenTableView.beginUpdates()
-        childrenTableView.insertRows(at: [newIndexPath], with: .fade)
+        childrenTableView.insertRows(at: [newIndexPath], with: .automatic)
         childrenTableView.endUpdates()
 
         childrenTableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
+
+        if childrenCount == 4 {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.addChildButton.alpha = 0
+            }, completion: { _ in
+                self.addChildButton.isHidden = true
+            })
+        }
     }
 }
 
@@ -109,15 +138,15 @@ extension MainViewController {
 
     private func setAddChildButton() {
         addChildButton.setTitle("Добавить ребенка", for: .normal)
-        addChildButton.setTitleColor(UIColor.systemBlue, for: .normal)
+        addChildButton.setTitleColor(ColorPack.blue, for: .normal)
 
         let image = UIImage(systemName: "plus")
         addChildButton.setImage(image, for: .normal)
-        addChildButton.tintColor = UIColor.systemBlue
+        addChildButton.tintColor = ColorPack.blue
 
         addChildButton.layer.cornerRadius = 25
         addChildButton.layer.borderWidth = 2
-        addChildButton.layer.borderColor = UIColor.systemBlue.cgColor
+        addChildButton.layer.borderColor = ColorPack.blue.cgColor
         addChildButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
 
         addChildButton.translatesAutoresizingMaskIntoConstraints = false

@@ -10,4 +10,8 @@ final class ViewModel {
     func incrementChildrenCount() {
         model.childrenCount += 1
     }
+
+    func decrementChildrenCount() {
+        model.childrenCount -= 1
+    }
 }

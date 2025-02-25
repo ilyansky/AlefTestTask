@@ -2,10 +2,13 @@ import UIKit
 
 final class CellView: UITableViewCell {
     static let cellViewID = "cellViewID"
+    weak var delegate: CellViewDelegate?
+    
     private let nameTextField = TextFieldView(labelText: "Имя",
                                               keyboardType: .chars)
     private let ageTextField = TextFieldView(labelText: "Возраст",
                                              keyboardType: .numbers)
+    private let deleteButton = UIButton(type: .system)
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -33,10 +36,17 @@ final class CellView: UITableViewCell {
 }
 
 extension CellView {
+    @objc private func deleteCell() {
+        delegate?.deleteButtonTapped(in: self)
+    }
+}
+
+extension CellView {
     private func setUI() {
         contentView.translatesAutoresizingMaskIntoConstraints = false
 
         setNameTextField()
+        setDeleteButton()
         setAgeTextField()
     }
 
@@ -46,8 +56,21 @@ extension CellView {
         NSLayoutConstraint.activate([
             nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 15),
             nameTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            nameTextField.widthAnchor.constraint(equalTo: widthAnchor),
+            nameTextField.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
             nameTextField.heightAnchor.constraint(equalToConstant: 70)
+        ])
+    }
+
+    private func setDeleteButton() {
+        deleteButton.translatesAutoresizingMaskIntoConstraints = false
+        deleteButton.setTitle("Удалить", for: .normal)
+        deleteButton.addTarget(self, action: #selector (deleteCell), for: .touchUpInside)
+
+        addSubview(deleteButton)
+
+        NSLayoutConstraint.activate([
+            deleteButton.centerYAnchor.constraint(equalTo: nameTextField.centerYAnchor),
+            deleteButton.leadingAnchor.constraint(equalTo: nameTextField.trailingAnchor, constant: 20)
         ])
     }
 
@@ -58,8 +81,10 @@ extension CellView {
             ageTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor,
                                               constant: 15),
             ageTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            ageTextField.widthAnchor.constraint(equalTo: widthAnchor),
+            ageTextField.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5),
             ageTextField.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
 }
+
+
