@@ -22,13 +22,46 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        hideKeyboardWhenTappedAround()
-        setTableView()
-        setUI()
+        setup()
     }
 }
 
+// MARK: - Utility
+extension MainViewController {
+    private func clearTableView() {
+        let count = viewModel.getChildrenCount()
+
+        var indexPaths: [IndexPath] = []
+        for row in 0..<count {
+            indexPaths.append(IndexPath(row: row, section: 0))
+        }
+
+        viewModel.clear()
+
+        childrenTableView.beginUpdates()
+        childrenTableView.deleteRows(at: indexPaths, with: .fade)
+        childrenTableView.endUpdates()
+    }
+
+    private func presonalData() {
+        nameTextField.textField.text = ""
+        ageTextField.textField.text = ""
+    }
+
+    private func showAddChildButton() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.addChildButton.alpha = 1
+        })
+    }
+
+    private func hideAddChildButton() {
+        UIView.animate(withDuration: 0.3, animations: {
+            self.addChildButton.alpha = 0
+        })
+    }
+}
+
+// MARK: - Delegates
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     private func setTableView() {
         childrenTableView.delegate = self
@@ -55,21 +88,21 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
 extension MainViewController: CellViewDelegate {
     func deleteButtonTapped(in cell: CellView) {
         if let indexPath = childrenTableView.indexPath(for: cell) {
+            let count = viewModel.getChildrenCount()
             viewModel.decrementChildrenCount()
             childrenTableView.beginUpdates()
             childrenTableView.deleteRows(at: [indexPath], with: .fade)
             childrenTableView.endUpdates()
 
-            UIView.animate(withDuration: 0.3, animations: {
-                self.addChildButton.isHidden = false
-                self.addChildButton.alpha = 1
-            })
+            if count == 5 {
+                showAddChildButton()
+            }
         }
-
     }
 }
 
-extension MainViewController {
+// MARK: - Actions
+extension MainViewController: UIActionSheetDelegate {
     @objc private func incrementChild() {
         let childrenCount = viewModel.getChildrenCount()
 
@@ -77,24 +110,40 @@ extension MainViewController {
         viewModel.incrementChildrenCount()
 
         childrenTableView.beginUpdates()
-        childrenTableView.insertRows(at: [newIndexPath], with: .automatic)
+        childrenTableView.insertRows(at: [newIndexPath], with: .fade)
         childrenTableView.endUpdates()
 
         childrenTableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
 
         if childrenCount == 4 {
-            UIView.animate(withDuration: 0.3, animations: {
-                self.addChildButton.alpha = 0
-            }, completion: { _ in
-                self.addChildButton.isHidden = true
-            })
+            hideAddChildButton()
         }
+    }
+
+    @objc private func tapClearButton() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let resetAction = UIAlertAction(title: "Сбросить данные", style: .default) { _ in
+            self.clearTableView()
+            self.presonalData()
+            self.showAddChildButton()
+        }
+
+        let cancelAction = UIAlertAction(title: "Отмена", style: .destructive)
+
+        alertController.addAction(resetAction)
+        alertController.addAction(cancelAction)
+
+        present(alertController, animated: true)
     }
 }
 
+// MARK: - Setup
 extension MainViewController {
-    private func setUI() {
+    private func setup() {
         view.backgroundColor = .white
+
+        hideKeyboardWhenTappedAround()
+        setTableView()
 
         setPersonalDataLabel()
         setNameTextField()
@@ -178,12 +227,14 @@ extension MainViewController {
         clearButton.layer.borderColor = ColorPack.red.cgColor
         clearButton.layer.cornerRadius = 25
         clearButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+        clearButton.addTarget(self, action: #selector(tapClearButton), for: .touchUpInside)
 
         view.addSubview(clearButton)
 
+
         NSLayoutConstraint.activate([
             clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            clearButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -20),
+            clearButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -15),
             clearButton.heightAnchor.constraint(equalToConstant: 50),
             clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 180)
         ])
@@ -201,4 +252,3 @@ extension MainViewController {
         ])
     }
 }
-

@@ -9,7 +9,7 @@ final class TextFieldView: UIView, UITextFieldDelegate {
     let labelText: String
     let keyboardType: KeyboardType
     private let label = UILabel()
-    private let textField = UITextField()
+    let textField = UITextField()
 
     init(labelText: String,
          keyboardType: KeyboardType,

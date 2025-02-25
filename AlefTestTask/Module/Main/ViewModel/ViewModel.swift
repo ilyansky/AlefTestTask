@@ -14,4 +14,8 @@ final class ViewModel {
     func decrementChildrenCount() {
         model.childrenCount -= 1
     }
+
+    func clear() {
+        model.childrenCount = 0
+    }
 }
