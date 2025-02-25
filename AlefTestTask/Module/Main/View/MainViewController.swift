@@ -21,36 +21,13 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(MainViewController.keyboardWillShow),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(MainViewController.keyboardWillHide),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
-
         setup()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
+        removeKeyboardObservers()
     }
-
-    @objc private func keyboardWillShow(notification: NSNotification) {
-        hideButton(clearButton)
-
-        if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
-            childrenTableView.setBottomInset(to: keyboardHeight)
-        }
-    }
-
-    @objc private func keyboardWillHide() {
-        showButton(clearButton)
-        childrenTableView.setBottomInset(to: 0.0)
-    }
-
 }
 
 // MARK: - Utility
@@ -93,6 +70,21 @@ extension MainViewController {
             button.alpha = 0
         })
     }
+
+    private func addKeyboardObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(MainViewController.keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(MainViewController.keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+
+    private func removeKeyboardObservers() {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 // MARK: - Delegate
@@ -133,6 +125,19 @@ extension MainViewController: CellViewDelegate {
 
 // MARK: - Action
 extension MainViewController {
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        hideButton(clearButton)
+
+        if let keyboardHeight = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height {
+            childrenTableView.setBottomInset(to: keyboardHeight)
+        }
+    }
+
+    @objc private func keyboardWillHide() {
+        showButton(clearButton)
+        childrenTableView.setBottomInset(to: 0.0)
+    }
+
     @objc private func incrementChild() {
         let childrenCount = viewModel.getChildrenCount()
 
@@ -172,6 +177,7 @@ extension MainViewController {
     private func setup() {
         view.backgroundColor = .white
 
+        addKeyboardObservers()
         hideKeyboardWhenTappedAround()
         setTableView()
 
@@ -269,7 +275,7 @@ extension MainViewController {
 
         NSLayoutConstraint.activate([
             clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            clearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            clearButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             clearButton.heightAnchor.constraint(equalToConstant: 50),
             clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 180)
         ])
