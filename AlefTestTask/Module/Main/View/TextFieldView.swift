@@ -42,7 +42,7 @@ extension TextFieldView {
     private func setUI() {
         translatesAutoresizingMaskIntoConstraints = false
         layer.borderWidth = 1
-        layer.borderColor = ColorPack.gray5
+        layer.borderColor = ColorPack.gray5.cgColor
         layer.cornerRadius = 5
 
         setLabel()

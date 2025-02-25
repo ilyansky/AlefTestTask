@@ -17,8 +17,7 @@ final class MainViewController: UIViewController {
                                           fontSize: 17)
     private let addChildButton = UIButton(type: .system)
     private let childrenTableView = UITableView()
-
-    private var activeTextField: UITextField?
+    private let clearButton = UIButton(type: .system)
 
 
     override func viewDidLoad() {
@@ -102,6 +101,7 @@ extension MainViewController {
         setAgeTextField()
         setAddChildButton()
         setChildrenLabel()
+        setClearButton()
         setChildrenTableView()
     }
 
@@ -156,7 +156,8 @@ extension MainViewController {
         NSLayoutConstraint.activate([
             addChildButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addChildButton.topAnchor.constraint(equalTo: ageTextField.bottomAnchor, constant: 10),
-            addChildButton.heightAnchor.constraint(equalToConstant: 50)
+            addChildButton.heightAnchor.constraint(equalToConstant: 50),
+            addChildButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 180)
         ])
     }
 
@@ -169,6 +170,25 @@ extension MainViewController {
         ])
     }
 
+    private func setClearButton() {
+        clearButton.translatesAutoresizingMaskIntoConstraints = false
+        clearButton.setTitle("Очистить", for: .normal)
+        clearButton.tintColor = ColorPack.red
+        clearButton.layer.borderWidth = 2
+        clearButton.layer.borderColor = ColorPack.red.cgColor
+        clearButton.layer.cornerRadius = 25
+        clearButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+
+        view.addSubview(clearButton)
+
+        NSLayoutConstraint.activate([
+            clearButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            clearButton.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -20),
+            clearButton.heightAnchor.constraint(equalToConstant: 50),
+            clearButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 180)
+        ])
+    }
+
     private func setChildrenTableView() {
         childrenTableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(childrenTableView)
@@ -177,9 +197,8 @@ extension MainViewController {
             childrenTableView.topAnchor.constraint(equalTo: addChildButton.bottomAnchor, constant: 10),
             childrenTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             childrenTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            childrenTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+            childrenTableView.bottomAnchor.constraint(equalTo: clearButton.topAnchor, constant: -20)
         ])
     }
-
 }
 
