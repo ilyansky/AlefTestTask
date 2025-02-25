@@ -3,7 +3,7 @@ import UIKit
 final class CellView: UITableViewCell {
     static let cellViewID = "cellViewID"
     weak var delegate: CellViewDelegate?
-    
+
     private let nameTextField = TextFieldView(labelText: "Имя",
                                               keyboardType: .chars)
     private let ageTextField = TextFieldView(labelText: "Возраст",
@@ -18,29 +18,29 @@ final class CellView: UITableViewCell {
 
         setUI()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//    }
-
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-
 }
 
+// MARK: - Utility
 extension CellView {
-    @objc private func deleteCell() {
+    func clear() {
+        nameTextField.clear()
+        ageTextField.clear()
+    }
+}
+
+// MARK: - Actions
+extension CellView {
+    @objc private func deleteButtonTapped() {
+        clear()
         delegate?.deleteButtonTapped(in: self)
     }
 }
 
+// MARK: - Setup
 extension CellView {
     private func setUI() {
         contentView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,7 +64,7 @@ extension CellView {
     private func setDeleteButton() {
         deleteButton.translatesAutoresizingMaskIntoConstraints = false
         deleteButton.setTitle("Удалить", for: .normal)
-        deleteButton.addTarget(self, action: #selector (deleteCell), for: .touchUpInside)
+        deleteButton.addTarget(self, action: #selector (deleteButtonTapped), for: .touchUpInside)
 
         addSubview(deleteButton)
 

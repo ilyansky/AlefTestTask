@@ -31,21 +31,28 @@ extension MainViewController {
     private func clearTableView() {
         let count = viewModel.getChildrenCount()
 
+        for row in 0..<count {
+            let indexPath = IndexPath(row: row, section: 0)
+            if let cell = childrenTableView.cellForRow(at: indexPath) as? CellView {
+                cell.clear()
+            }
+        }
+
+        viewModel.clear()
+
         var indexPaths: [IndexPath] = []
         for row in 0..<count {
             indexPaths.append(IndexPath(row: row, section: 0))
         }
-
-        viewModel.clear()
 
         childrenTableView.beginUpdates()
         childrenTableView.deleteRows(at: indexPaths, with: .fade)
         childrenTableView.endUpdates()
     }
 
-    private func presonalData() {
-        nameTextField.textField.text = ""
-        ageTextField.textField.text = ""
+    private func clearPersonalData() {
+        nameTextField.clear()
+        ageTextField.clear()
     }
 
     private func showAddChildButton() {
@@ -63,12 +70,6 @@ extension MainViewController {
 
 // MARK: - Delegates
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
-    private func setTableView() {
-        childrenTableView.delegate = self
-        childrenTableView.dataSource = self
-        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.cellViewID)
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.getChildrenCount()
     }
@@ -89,22 +90,28 @@ extension MainViewController: CellViewDelegate {
     func deleteButtonTapped(in cell: CellView) {
         if let indexPath = childrenTableView.indexPath(for: cell) {
             let count = viewModel.getChildrenCount()
-            viewModel.decrementChildrenCount()
-            childrenTableView.beginUpdates()
-            childrenTableView.deleteRows(at: [indexPath], with: .fade)
-            childrenTableView.endUpdates()
 
             if count == 5 {
                 showAddChildButton()
             }
+
+            viewModel.decrementChildrenCount()
+
+            childrenTableView.beginUpdates()
+            childrenTableView.deleteRows(at: [indexPath], with: .fade)
+            childrenTableView.endUpdates()
         }
     }
 }
 
 // MARK: - Actions
-extension MainViewController: UIActionSheetDelegate {
+extension MainViewController {
     @objc private func incrementChild() {
         let childrenCount = viewModel.getChildrenCount()
+
+        if childrenCount == 4 {
+            hideAddChildButton()
+        }
 
         let newIndexPath = IndexPath(row: childrenCount, section: 0)
         viewModel.incrementChildrenCount()
@@ -114,17 +121,13 @@ extension MainViewController: UIActionSheetDelegate {
         childrenTableView.endUpdates()
 
         childrenTableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
-
-        if childrenCount == 4 {
-            hideAddChildButton()
-        }
     }
 
     @objc private func tapClearButton() {
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         let resetAction = UIAlertAction(title: "Сбросить данные", style: .default) { _ in
             self.clearTableView()
-            self.presonalData()
+            self.clearPersonalData()
             self.showAddChildButton()
         }
 
@@ -152,6 +155,12 @@ extension MainViewController {
         setChildrenLabel()
         setClearButton()
         setChildrenTableView()
+    }
+
+    private func setTableView() {
+        childrenTableView.delegate = self
+        childrenTableView.dataSource = self
+        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.cellViewID)
     }
 
     private func setPersonalDataLabel() {

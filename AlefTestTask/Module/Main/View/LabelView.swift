@@ -3,7 +3,7 @@ import UIKit
 final class LabelView: UILabel {
     let labelText: String
     let fontSize: CGFloat
-
+    
     init(labelText: String,
          fontSize: CGFloat,
          frame: CGRect = .zero) {
@@ -18,6 +18,7 @@ final class LabelView: UILabel {
     }
 }
 
+// MARK: - Setup
 extension LabelView {
     private func setUI() {
         text = labelText
