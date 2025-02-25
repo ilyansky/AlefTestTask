@@ -1,6 +1,8 @@
 import UIKit
 
 final class MainViewController: UIViewController {
+    private let viewModel = ViewModel()
+
     private let personalDataLabel = LabelView(labelText: "Персональные данные",
                                               fontSize: 17)
     private let nameTextField = TextFieldView(labelText: "Имя",
@@ -13,22 +15,26 @@ final class MainViewController: UIViewController {
 
     private let childrenTableView = UITableView()
 
-    private var childrenCount = 0
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         hideKeyboardWhenTappedAround()
-        childrenTableView.delegate = self
-        childrenTableView.dataSource = self
-        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.cellViewID)
+        setTableView()
         setUI()
     }
 }
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
+    private func setTableView() {
+        childrenTableView.delegate = self
+        childrenTableView.dataSource = self
+        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.cellViewID)
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return childrenCount
+        return viewModel.getChildrenCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -45,10 +51,11 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
 
 extension MainViewController {
     @objc private func incrementChild() {
+        let childrenCount = viewModel.getChildrenCount()
         guard childrenCount < 5 else { return }
 
         let newIndexPath = IndexPath(row: childrenCount, section: 0)
-        childrenCount += 1
+        viewModel.incrementChildrenCount()
 
         childrenTableView.beginUpdates()
         childrenTableView.insertRows(at: [newIndexPath], with: .fade)
@@ -142,7 +149,7 @@ extension MainViewController {
             childrenTableView.topAnchor.constraint(equalTo: addChildButton.bottomAnchor, constant: 10),
             childrenTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             childrenTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            childrenTableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            childrenTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10)
         ])
     }
 
