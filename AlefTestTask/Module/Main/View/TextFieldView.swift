@@ -1,10 +1,5 @@
 import UIKit
 
-enum TextFieldViewSize {
-    static let horizontalSpace: CGFloat = 15
-    static let verticalSpace: CGFloat = 10
-}
-
 final class TextFieldView: UIView, UITextFieldDelegate {
     enum KeyboardType {
         case chars
@@ -46,16 +41,12 @@ final class TextFieldView: UIView, UITextFieldDelegate {
 extension TextFieldView {
     private func setUI() {
         translatesAutoresizingMaskIntoConstraints = false
-
-        setView()
-        setLabel()
-        setTextField()
-    }
-
-    private func setView() {
         layer.borderWidth = 1
         layer.borderColor = ColorPack.gray5
         layer.cornerRadius = 5
+
+        setLabel()
+        setTextField()
     }
 
     private func setLabel() {
@@ -67,9 +58,9 @@ extension TextFieldView {
 
         NSLayoutConstraint.activate([
             label.topAnchor.constraint(equalTo: topAnchor,
-                                       constant: TextFieldViewSize.verticalSpace),
+                                       constant: 10),
             label.leadingAnchor.constraint(equalTo: leadingAnchor,
-                                           constant: TextFieldViewSize.horizontalSpace)
+                                           constant: 15)
         ])
     }
 
@@ -83,12 +74,9 @@ extension TextFieldView {
         addSubview(textField)
 
         NSLayoutConstraint.activate([
-            textField.bottomAnchor.constraint(equalTo: bottomAnchor,
-                                              constant: -TextFieldViewSize.verticalSpace),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor,
-                                               constant: TextFieldViewSize.horizontalSpace),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor,
-                                                constant: -TextFieldViewSize.horizontalSpace)
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15)
         ])
     }
 }

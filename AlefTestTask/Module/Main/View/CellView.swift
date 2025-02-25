@@ -9,6 +9,10 @@ final class CellView: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        selectionStyle = .none
+        separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+
         setUI()
     }
     
@@ -30,7 +34,8 @@ final class CellView: UITableViewCell {
 
 extension CellView {
     private func setUI() {
-        translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+
         setNameTextField()
         setAgeTextField()
     }
@@ -39,7 +44,7 @@ extension CellView {
         addSubview(nameTextField)
 
         NSLayoutConstraint.activate([
-            nameTextField.topAnchor.constraint(equalTo: topAnchor),
+            nameTextField.topAnchor.constraint(equalTo: topAnchor, constant: 15),
             nameTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
             nameTextField.widthAnchor.constraint(equalTo: widthAnchor),
             nameTextField.heightAnchor.constraint(equalToConstant: 70)
@@ -50,9 +55,10 @@ extension CellView {
         addSubview(ageTextField)
 
         NSLayoutConstraint.activate([
-            ageTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor, constant: 15),
+            ageTextField.topAnchor.constraint(equalTo: nameTextField.bottomAnchor,
+                                              constant: 15),
             ageTextField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            ageTextField.widthAnchor.constraint(equalTo: widthAnchor, constant: 100),
+            ageTextField.widthAnchor.constraint(equalTo: widthAnchor),
             ageTextField.heightAnchor.constraint(equalToConstant: 70)
         ])
     }

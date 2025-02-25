@@ -13,6 +13,8 @@ final class MainViewController: UIViewController {
 
     private let childrenTableView = UITableView()
 
+    private var childrenCount = 0
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,13 +28,33 @@ final class MainViewController: UIViewController {
 
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return childrenCount
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = childrenTableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as! CellView
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 185
+    }
+
+}
+
+extension MainViewController {
+    @objc private func incrementChild() {
+        guard childrenCount < 5 else { return }
+
+        let newIndexPath = IndexPath(row: childrenCount, section: 0)
+        childrenCount += 1
+
+        childrenTableView.beginUpdates()
+        childrenTableView.insertRows(at: [newIndexPath], with: .fade)
+        childrenTableView.endUpdates()
+
+        childrenTableView.scrollToRow(at: newIndexPath, at: .bottom, animated: true)
     }
 }
 
@@ -93,6 +115,7 @@ extension MainViewController {
         addChildButton.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
 
         addChildButton.translatesAutoresizingMaskIntoConstraints = false
+        addChildButton.addTarget(self, action: #selector(incrementChild), for: .touchUpInside)
         view.addSubview(addChildButton)
 
         NSLayoutConstraint.activate([
