@@ -12,9 +12,9 @@ final class MainViewController: UIViewController {
     private let childrenLabel = LabelView(labelText: "Дети (макс. 5)",
                                           fontSize: 17)
     private let addChildButton = UIButton(type: .system)
-
     private let childrenTableView = UITableView()
 
+    private var activeTextField: UITextField?
 
 
     override func viewDidLoad() {
@@ -36,7 +36,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.getChildrenCount()
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = childrenTableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as! CellView
 
@@ -46,7 +46,6 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 185
     }
-
 }
 
 extension MainViewController {
@@ -149,7 +148,7 @@ extension MainViewController {
             childrenTableView.topAnchor.constraint(equalTo: addChildButton.bottomAnchor, constant: 10),
             childrenTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             childrenTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            childrenTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor, constant: -10)
+            childrenTableView.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
         ])
     }
 
