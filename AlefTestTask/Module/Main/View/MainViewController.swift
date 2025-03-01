@@ -94,7 +94,9 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = childrenTableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as! CellView
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as? CellView else {
+            return UITableViewCell()
+        }
         cell.delegate = self
 
         return cell
