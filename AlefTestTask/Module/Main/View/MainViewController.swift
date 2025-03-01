@@ -7,17 +7,17 @@ protocol CellViewDelegate: AnyObject {
 final class MainViewController: UIViewController {
     private let viewModel = ViewModel()
 
-    private lazy var personalDataLabel = LabelView(labelText: "Персональные данные",
+    private let personalDataLabel = LabelView(labelText: "Персональные данные",
                                               fontSize: 17)
-    private lazy var nameTextField = TextFieldView(labelText: "Имя",
+    private let nameTextField = TextFieldView(labelText: "Имя",
                                               keyboardType: .chars)
-    private lazy var ageTextField = TextFieldView(labelText: "Возраст",
+    private let ageTextField = TextFieldView(labelText: "Возраст",
                                              keyboardType: .numbers)
-    private lazy var childrenLabel = LabelView(labelText: "Дети (макс. 5)",
+    private let childrenLabel = LabelView(labelText: "Дети (макс. 5)",
                                           fontSize: 17)
-    private lazy var addChildButton = UIButton(type: .system)
-    private lazy var childrenTableView = UITableView()
-    private lazy var clearButton = UIButton(type: .system)
+    private let addChildButton = UIButton(type: .system)
+    private let childrenTableView = UITableView()
+    private let clearButton = UIButton(type: .system)
 
     override func viewDidLoad() {
         super.viewDidLoad()
