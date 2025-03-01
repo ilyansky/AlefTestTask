@@ -1,7 +1,7 @@
 import UIKit
 
 final class CellView: UITableViewCell {
-    static let cellViewID = "cellViewID"
+    static let reuseId = String(describing: CellView.self)
     weak var delegate: CellViewDelegate?
 
     private let nameTextField = TextFieldView(labelText: "Имя",

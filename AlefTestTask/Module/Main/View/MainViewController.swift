@@ -94,7 +94,7 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: CellView.cellViewID, for: indexPath) as? CellView else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: CellView.reuseId, for: indexPath) as? CellView else {
             return UITableViewCell()
         }
         cell.delegate = self
@@ -195,7 +195,7 @@ extension MainViewController {
     private func setTableView() {
         childrenTableView.delegate = self
         childrenTableView.dataSource = self
-        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.cellViewID)
+        childrenTableView.register(CellView.self, forCellReuseIdentifier: CellView.reuseId)
     }
 
     private func setPersonalDataLabel() {
